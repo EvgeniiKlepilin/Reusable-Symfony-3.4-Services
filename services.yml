@@ -1,0 +1,12 @@
+# config/services.yml
+# Add this to register your services
+services:
+    api.error:
+        class: AppBundle\Utils\ApiError
+        arguments: ['@translator']
+        public: false
+        
+    app.mailer:
+        class: AppBundle\Utils\Mailer
+        arguments: ['@mailer']
+        public: false
