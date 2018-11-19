@@ -10,3 +10,13 @@ services:
         class: AppBundle\Utils\Mailer
         arguments: ['@mailer']
         public: false
+        
+    AppBundle\Utils\Checker:
+        public: false
+        
+    AppBundle\Utils\FilterProcessor:
+        public: false
+        
+    AppBundle\Utils\FileUrler:
+        arguments: ['@vich_uploader.templating.helper.uploader_helper']
+        public: false
