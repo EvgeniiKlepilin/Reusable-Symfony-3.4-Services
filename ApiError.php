@@ -8,6 +8,9 @@ namespace AppBundle\Utils;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
@@ -25,6 +28,8 @@ class ApiError
         400 => "api.request.bad_request",
         403 => "api.request.access_denied",
         404 => "api.request.not_found",
+        405 => "api.request.not_allowed",
+        409 => "api.request.conflict",
     );
 
     public function __construct(TranslatorInterface $translator)
@@ -35,51 +40,25 @@ class ApiError
     public function statusCode($code)
     {
         switch ($code) {
-            case 404:
-                throw new NotFoundHttpException($this->translator
+            case 400:
+                throw new BadRequestHttpException($this->translator
                     ->trans($this->statusCodes[$code], array(), 'validators'));
                 break;
             case 403:
                 throw new AccessDeniedException($this->translator
                     ->trans($this->statusCodes[$code], array(), 'validators'));
                 break;
-        }
-    }
-
-    public function userCode($code)
-    {
-        switch ($code) {
             case 404:
                 throw new NotFoundHttpException($this->translator
-                    ->trans('user.error.not_found', array(), 'validators'));
+                    ->trans($this->statusCodes[$code], array(), 'validators'));
                 break;
-        }
-    }
-
-    public function postCode($code)
-    {
-        switch ($code) {
-            case 403:
-                throw new AccessDeniedException($this->translator
-                    ->trans('post.error.access_denied', array(), 'validators'));
+            case 405:
+                throw new MethodNotAllowedHttpException(array(), $this->translator
+                    ->trans($this->statusCodes[$code], array(), 'validators'));
                 break;
-            case 404:
-                throw new NotFoundHttpException($this->translator
-                    ->trans('post.error.not_found', array(), 'validators'));
-                break;
-        }
-    }
-
-    public function commentCode($code)
-    {
-        switch ($code) {
-            case 403:
-                throw new AccessDeniedException($this->translator
-                    ->trans('comment.error.access_denied', array(), 'validators'));
-                break;
-            case 404:
-                throw new NotFoundHttpException($this->translator
-                    ->trans('comment.error.not_found', array(), 'validators'));
+            case 409:
+                throw new ConflictHttpException($this->translator
+                    ->trans($this->statusCodes[$code], array(), 'validators'));
                 break;
         }
     }
